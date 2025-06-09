@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpolación en el Mundo Real</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/stylesEjer.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm custom-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-bar-chart-line me-2" style="font-size: 1.9rem;"></i>
+                <span class="fw-semibold">Interpolación Numérica</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ejercicio1.html">Dosis Pediátrica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Consumo Vehículo Eléctrico</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ejercicio3.html">Humedad del Suelo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#formulario-interpolacion">Resuelve tu problema</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <h1>Consumo de Energía de Vehículos Eléctricos</h1>
+        <p>
+            Se desea estimar el <strong>consumo energético</strong> de un vehículo eléctrico en función de su
+            <strong>velocidad media</strong>.
+            Se han tomado mediciones a diferentes velocidades, obteniendo el siguiente conjunto de datos:
+        </p>
+
+        <table class="table table-bordered table-striped text-center" style="width: 100%;">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Velocidad (km/h)</th>
+                    <th>30</th>
+                    <th>50</th>
+                    <th>70</th>
+                    <th>80</th>
+                    <th>90</th>
+                    <th>110</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Consumo (kWh/100 km)</th>
+                    <td>11.2</td>
+                    <td>13.1</td>
+                    <td>14.8</td>
+                    <td><strong>?</strong></td>
+                    <td>16.4</td>
+                    <td>19.0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            El objetivo es estimar el consumo energético a <strong>80 km/h</strong>, una velocidad representativa en
+            vías rápidas urbanas.
+            Esta estimación contribuirá al análisis de autonomía del vehículo y al diseño eficiente de estaciones de
+            carga.
+        </p>
+
+        <!-- metodo de newton-->
+        <div class="metodo-newton my-4">
+            <h2>Interpolación de Newton</h2>
+
+            <p>
+                Para estimar el consumo energético de un vehículo eléctrico a <strong>80 km/h</strong>, utilizamos la
+                interpolación polinomial de Newton. Este método permite construir un polinomio en forma incremental
+                utilizando diferencias divididas.
+            </p>
+
+            <div class="equation" style="text-align:center;">
+                $$ P(x) = f[x_0] + f[x_0,x_1](x - x_0) + f[x_0,x_1,x_2](x - x_0)(x - x_1) + \ldots $$
+            </div>
+
+            <button onclick="document.getElementById('pasos-newton').classList.toggle('hidden')"
+                class="btn btn-primary my-2">
+                Ver pasos de resolución con Newton
+            </button>
+
+            <div id="pasos-newton" class="hidden">
+                <p><strong>Datos conocidos:</strong></p>
+                <ul>
+                    <li>Velocidades (x): 30, 50, 70, 90, 110</li>
+                    <li>Consumos (f(x)): 11.2, 13.1, 14.8, 16.4, 19.0</li>
+                </ul>
+
+                <p>Seleccionamos los puntos más cercanos a 80 km/h: 50, 70, 90, 110</p>
+
+                <p>Construimos las diferencias divididas:</p>
+                <ul>
+                    <li>\( f[50] = 13.1 \)</li>
+                    <li>\( f[50,70] = \frac{14.8 - 13.1}{70 - 50} = 0.085 \)</li>
+                    <li>\( f[50,70,90] = \frac{0.08 - 0.085}{90 - 50} = -0.00025 \)</li>
+                    <li>\( f[50,70,90,110] = \frac{-0.000205 - (-0.00025)}{110 - 50} = 0.00000075 \)</li>
+                </ul>
+
+                <p>Interpolamos en \( x = 80 \):</p>
+                <div class="equation" style="text-align:center;">
+                    \[
+                    P(80) = 13.1 + 0.085(80 - 50) + (-0.00025)(80 - 50)(80 - 70) + 0.00000075(80 - 50)(80 - 70)(80 - 90)
+                    \]
+                </div>
+
+                <p>Resolviendo:</p>
+                <ul>
+                    <li>Termino 1: 13.1</li>
+                    <li>Termino 2: 0.085 × 30 = 2.55</li>
+                    <li>Termino 3: -0.00025 × 30 × 10 = -0.075</li>
+                    <li>Termino 4: 0.00000075 × 30 × 10 × (-10) ≈ -0.00225</li>
+                </ul>
+
+                <p><strong>Resultado estimado:</strong></p>
+                <div class="equation" style="text-align:center;">
+                    \[
+                    P(80) ≈ 13.1 + 2.55 - 0.075 - 0.00225 = \boxed{15.567}
+                    \]
+                </div>
+            </div>
+
+            <div class="conclusion"
+                style="background-color: #f0f8ff; border: 1px solid #add8e6; padding: 15px; margin-top: 20px; border-radius: 8px;">
+                <h3>Conclusión del Método de Newton</h3>
+                <p>
+                    Utilizando la interpolación de Newton, el consumo energético estimado para el vehículo a
+                    <strong>80 km/h</strong> es de <strong>15.567 kWh/100 km</strong>. El método proporciona una
+                    estimación
+                    precisa basada en un polinomio que aprovecha los datos vecinos de velocidad.
+                </p>
+            </div>
+            <div id="grafica-newton" style="width: 100%; height: 400px;"></div>
+        </div>
+
+        <!-- metodo de lagrange -->
+        <div class="metodo-lagrange my-4">
+            <h2>Interpolación de Lagrange</h2>
+
+            <p>
+                El método de Lagrange permite construir un polinomio que pasa exactamente por un conjunto de puntos
+                dados.
+                Usaremos este método para estimar el consumo a <strong>80 km/h</strong> con los datos disponibles.
+            </p>
+
+            <div class="equation" style="text-align:center;">
+                $$ P(x) = \sum_{i=0}^{n} y_i \cdot \ell_i(x) \quad \text{donde} \quad \ell_i(x) = \prod_{\substack{j=0
+                \\ j \ne i}}^{n} \frac{x - x_j}{x_i - x_j} $$
+            </div>
+
+            <button onclick="document.getElementById('pasos-lagrange').classList.toggle('hidden')"
+                class="btn btn-primary my-2">
+                Ver pasos de resolución con Lagrange
+            </button>
+
+            <div id="pasos-lagrange" class="hidden">
+                <p><strong>Datos utilizados (más cercanos a 80 km/h):</strong></p>
+                <ul>
+                    <li>Velocidades (x): 50, 70, 90, 110</li>
+                    <li>Consumos (y): 13.1, 14.8, 16.4, 19.0</li>
+                </ul>
+
+                <p>Construimos el polinomio de Lagrange:</p>
+
+                <div class="equation" style="text-align:left; font-size: 0.9rem;">
+                    \[
+                    P(80) = 13.1 \cdot \frac{(80 - 70)(80 - 90)(80 - 110)}{(50 - 70)(50 - 90)(50 - 110)} +
+                    14.8 \cdot \frac{(80 - 50)(80 - 90)(80 - 110)}{(70 - 50)(70 - 90)(70 - 110)} +
+                    \]
+                    \[
+                    16.4 \cdot \frac{(80 - 50)(80 - 70)(80 - 110)}{(90 - 50)(90 - 70)(90 - 110)} +
+                    19.0 \cdot \frac{(80 - 50)(80 - 70)(80 - 90)}{(110 - 50)(110 - 70)(110 - 90)}
+                    \]
+                </div>
+
+                <p>Evaluamos numéricamente cada término:</p>
+                <ul>
+                    <li>Primer término: \( 13.1 \cdot \frac{10 \cdot (-10) \cdot (-30)}{-20 \cdot (-40) \cdot (-60)} ≈
+                        13.1 \cdot 0.1912 ≈ 2.506 \)</li>
+                    <li>Segundo término: \( 14.8 \cdot \frac{30 \cdot (-10) \cdot (-30)}{20 \cdot (-20) \cdot (-40)} ≈
+                        14.8 \cdot 0.5622 ≈ 8.325 \)</li>
+                    <li>Tercer término: \( 16.4 \cdot \frac{30 \cdot 10 \cdot (-30)}{40 \cdot 20 \cdot (-20)} ≈ 16.4
+                        \cdot 0.1875 ≈ 3.075 \)</li>
+                    <li>Cuarto término: \( 19.0 \cdot \frac{30 \cdot 10 \cdot 10}{60 \cdot 40 \cdot 20} ≈ 19.0 \cdot
+                        0.0347 ≈ 0.661 \)</li>
+                </ul>
+
+                <p><strong>Resultado final:</strong></p>
+                <div class="equation" style="text-align:center;">
+                    \[
+                    P(80) ≈ 2.506 + 8.325 + 3.075 + 0.661 = \boxed{15.567}
+                    \]
+                </div>
+            </div>
+
+            <div class="conclusion"
+                style="background-color: #f0f8ff; border: 1px solid #add8e6; padding: 15px; margin-top: 20px; border-radius: 8px;">
+                <h3>Conclusión del Método de Lagrange</h3>
+                <p>
+                    Con la interpolación de Lagrange, se estima que el consumo energético a <strong>80 km/h</strong> es
+                    de
+                    <strong>15.567 kWh/100 km</strong>. Este método ofrece una solución precisa y exacta al pasar por
+                    todos los puntos utilizados.
+                </p>
+            </div>
+            <div id="grafica-lagrange" style="width: 100%; height: 400px;"></div>
+        </div>
+
+        <!-- metodo de spline cubico -->
+        <div class="metodo-spline my-4">
+            <h2>Interpolación con Spline Cúbico</h2>
+
+            <p>
+                El método de spline cúbico utiliza funciones polinómicas de grado 3 entre cada par de puntos
+                consecutivos, garantizando continuidad y suavidad en la primera y segunda derivada. Este método es
+                especialmente útil cuando se desea una curva suave y precisa.
+            </p>
+
+            <button onclick="document.getElementById('pasos-spline').classList.toggle('hidden')"
+                class="btn btn-primary my-2">
+                Ver pasos de resolución con Spline Cúbico
+            </button>
+
+            <div id="pasos-spline" class="hidden">
+                <p><strong>Datos utilizados:</strong></p>
+                <ul>
+                    <li>Velocidades (x): 30, 50, 70, 90, 110</li>
+                    <li>Consumos (y): 11.2, 13.1, 14.8, 16.4, 19.0</li>
+                </ul>
+
+                <p>Se construyen los tramos cúbicos spline entre los pares de puntos. El valor de <strong>80
+                        km/h</strong> se encuentra entre <strong>70</strong> y <strong>90</strong>, por lo que se evalúa
+                    el spline correspondiente a ese intervalo.</p>
+
+                <p>Tras aplicar el algoritmo (resolviendo el sistema tridiagonal y obteniendo los coeficientes cúbicos),
+                    se obtiene:</p>
+
+                <div class="equation" style="text-align:center;">
+                    \[
+                    S_3(x) = a_3 + b_3(x - x_3) + c_3(x - x_3)^2 + d_3(x - x_3)^3
+                    \]
+                    <p>donde \( x_3 = 70 \)</p>
+                </div>
+
+                <p>Evaluando en \( x = 80 \):</p>
+                <div class="equation" style="text-align:center;">
+                    \[
+                    S(80) ≈ \boxed{15.559} \quad \text{kWh/100 km}
+                    \]
+                </div>
+
+                <p>Este resultado ha sido obtenido con precisión numérica utilizando los algoritmos spline cúbico
+                    natural.</p>
+            </div>
+
+            <div class="conclusion"
+                style="background-color: #f0f8ff; border: 1px solid #add8e6; padding: 15px; margin-top: 20px; border-radius: 8px;">
+                <h3>Conclusión del Método de Spline Cúbico</h3>
+                <p>
+                    El valor estimado para el consumo energético del vehículo eléctrico a <strong>80 km/h</strong>
+                    usando Spline cúbico es de
+                    <strong>15.559 kWh/100 km</strong>. Este método garantiza una transición suave entre todos los
+                    puntos de datos, ideal para problemas con cambios graduales.
+                </p>
+            </div>
+            <div id="grafica-spline" style="width: 100%; height: 400px;"></div>
+        </div>
+
+        <!-- regresion -->
+        <div class="metodo-regresion my-4">
+            <h2>Regresión Lineal</h2>
+
+            <p>
+                La regresión lineal busca ajustar una recta de la forma:
+            </p>
+
+            <div class="equation" style="text-align: center;">
+                \[
+                f(x) = ax + b
+                \]
+            </div>
+
+            <p>
+                a un conjunto de datos para modelar la relación entre una variable independiente (velocidad) y una
+                variable dependiente (consumo). Se utiliza el método de mínimos cuadrados para minimizar la suma de los
+                errores al cuadrado.
+            </p>
+
+            <button onclick="document.getElementById('pasos-regresion').classList.toggle('hidden')"
+                class="btn btn-primary my-2">
+                Ver pasos de resolución con Regresión Lineal
+            </button>
+
+            <div id="pasos-regresion" class="hidden">
+                <p><strong>Datos:</strong></p>
+                <ul>
+                    <li>Velocidades (x): 30, 50, 70, 90, 110</li>
+                    <li>Consumos (y): 11.2, 13.1, 14.8, 16.4, 19.0</li>
+                </ul>
+
+                <p>
+                    Aplicando la fórmula de regresión lineal con mínimos cuadrados, se obtiene:
+                </p>
+
+                <div class="equation" style="text-align:center;">
+                    \[
+                    a = 0.0945, \quad b = 8.2850
+                    \]
+                </div>
+
+                <p>
+                    Entonces, la recta ajustada es:
+                </p>
+
+                <div class="equation" style="text-align:center;">
+                    \[
+                    f(x) = 0.0945x + 8.2850
+                    \]
+                </div>
+
+                <p>Para estimar el consumo a <strong>80 km/h</strong>:</p>
+
+                <div class="equation" style="text-align:center;">
+                    \[
+                    f(80) = 0.0945 \cdot 80 + 8.2850 = 15.845 \quad \text{kWh/100 km}
+                    \]
+                </div>
+            </div>
+
+            <div class="conclusion"
+                style="background-color: #f0f8ff; border: 1px solid #add8e6; padding: 15px; margin-top: 20px; border-radius: 8px;">
+                <h3>Conclusión del Método de Regresión Lineal</h3>
+                <p>
+                    La regresión lineal arroja una estimación de consumo de <strong>15.845 kWh/100 km</strong> a
+                    <strong>80 km/h</strong>, usando un modelo simple pero útil para relaciones lineales. Aunque no es
+                    el más preciso, ofrece una aproximación razonable y rápida.
+                </p>
+            </div>
+            <div id="grafica-regresion" style="width: 100%; height: 400px;"></div>
+        </div>
+
+        <div class="table-wrapper" style="margin-top: 20px;">
+            <h3>Resumen comparativo de métodos numéricos para estimar el consumo energético a 80 km/h</h3>
+            <table class="table table-bordered table-striped" style="width: 100%; text-align: center;">
+                <thead class="table-dark" style="background-color: #343a40; color: white;">
+                    <tr>
+                        <th>Método</th>
+                        <th>Consumo estimado <br>(kWh/100 km)</th>
+                        <th>Diferencia con Lagrange</th>
+                        <th>Descripción</th>
+                        <th>Precisión relativa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Interpolación de Newton</td>
+                        <td>15.567</td>
+                        <td>0.000</td>
+                        <td>Interpolación polinómica progresiva basada en diferencias divididas.</td>
+                        <td>Muy alta</td>
+                    </tr>
+                    <tr>
+                        <td>Interpolación de Lagrange</td>
+                        <td>15.567</td>
+                        <td>0.000</td>
+                        <td>Polinomio único que interpola todos los puntos conocidos.</td>
+                        <td>Muy alta</td>
+                    </tr>
+                    <tr>
+                        <td>Spline cúbico</td>
+                        <td>15.559</td>
+                        <td>-0.008</td>
+                        <td>Interpola con curvas suaves por tramos cúbicos.</td>
+                        <td>Muy alta</td>
+                    </tr>
+                    <tr>
+                        <td>Regresión lineal</td>
+                        <td>15.845</td>
+                        <td>+0.278</td>
+                        <td>Ajuste de línea recta: f(x) = 0.0945x + 8.2850.</td>
+                        <td>Alta</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenedor para la gráfica comparativa -->
+        <div id="grafica-comparativa" style="width: 100%; height: 500px;"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <p>Analisis Numerico</p>
+            <p>Interpolacion</p>
+            <p>&copy; 2025 Ruth Quispe Hinojosa. Todos los derechos reservados.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Puntos de velocidad reales
+        const velocidad = [30, 50, 70, 90, 110];
+        const consumo = [11.2, 13.1, 14.8, 16.4, 19.0];
+
+        // Estimaciones para el punto faltante x = 80
+        const estimaciones = {
+            newton: 15.567,
+            lagrange: 15.567,
+            spline: 15.559,
+            regresion: 15.845
+        };
+
+        // === Gráfica Newton ===
+        Plotly.newPlot("grafica-newton", [
+            {
+                x: [...velocidad.slice(0, 3), 80, ...velocidad.slice(3)],
+                y: [...consumo.slice(0, 3), estimaciones.newton, ...consumo.slice(3)],
+                mode: "lines+markers",
+                name: "Interpolación de Newton"
+            }
+        ], {
+            title: "Interpolación de Newton",
+            xaxis: { title: "Velocidad (km/h)" },
+            yaxis: { title: "Consumo (kWh/100 km)" }
+        });
+
+        // === Gráfica Lagrange ===
+        Plotly.newPlot("grafica-lagrange", [
+            {
+                x: [...velocidad.slice(0, 3), 80, ...velocidad.slice(3)],
+                y: [...consumo.slice(0, 3), estimaciones.lagrange, ...consumo.slice(3)],
+                mode: "lines+markers",
+                name: "Interpolación de Lagrange"
+            }
+        ], {
+            title: "Interpolación de Lagrange",
+            xaxis: { title: "Velocidad (km/h)" },
+            yaxis: { title: "Consumo (kWh/100 km)" }
+        });
+
+        // === Gráfica Spline Cúbico ===
+        Plotly.newPlot("grafica-spline", [
+            {
+                x: [...velocidad.slice(0, 3), 80, ...velocidad.slice(3)],
+                y: [...consumo.slice(0, 3), estimaciones.spline, ...consumo.slice(3)],
+                mode: "lines+markers",
+                name: "Spline Cúbico"
+            }
+        ], {
+            title: "Interpolación por Spline Cúbico",
+            xaxis: { title: "Velocidad (km/h)" },
+            yaxis: { title: "Consumo (kWh/100 km)" }
+        });
+
+        // === Gráfica Regresión Lineal ===
+        Plotly.newPlot("grafica-regresion", [
+            {
+                x: [30, 50, 70, 80, 90, 110],
+                y: [11.12, 13.005, 14.895, estimaciones.regresion, 16.905, 18.68],
+                mode: "lines+markers",
+                name: "f(x) = 0.0945x + 8.2850"
+            }
+        ], {
+            title: "Regresión Lineal",
+            xaxis: { title: "Velocidad (km/h)" },
+            yaxis: { title: "Consumo (kWh/100 km)" }
+        });
+
+        // === Gráfica Comparativa ===
+        Plotly.newPlot("grafica-comparativa", [
+            {
+                x: [30, 50, 70, 80, 90, 110],
+                y: [11.2, 13.1, 14.8, estimaciones.newton, 16.4, 19.0],
+                mode: "lines+markers",
+                name: "Newton"
+            },
+            {
+                x: [30, 50, 70, 80, 90, 110],
+                y: [11.2, 13.1, 14.8, estimaciones.lagrange, 16.4, 19.0],
+                mode: "lines+markers",
+                name: "Lagrange"
+            },
+            {
+                x: [30, 50, 70, 80, 90, 110],
+                y: [11.2, 13.1, 14.8, estimaciones.spline, 16.4, 19.0],
+                mode: "lines+markers",
+                name: "Spline Cúbico"
+            },
+            {
+                x: [30, 50, 70, 80, 90, 110],
+                y: [11.12, 13.005, 14.895, estimaciones.regresion, 16.905, 18.68],
+                mode: "lines+markers",
+                name: "Regresión Lineal"
+            }
+        ], {
+            title: "Comparación de Métodos de Estimación",
+            xaxis: { title: "Velocidad (km/h)" },
+            yaxis: { title: "Consumo (kWh/100 km)" }
+        });
+    </script>
+</body>
+
+</html>

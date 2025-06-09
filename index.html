@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpolación en el Mundo Real</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm custom-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-bar-chart-line me-2" style="font-size: 1.9rem;"></i>
+                <span class="fw-semibold">Interpolación Numérica</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="html/ejercicio1.html">Dosis Pediátrica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="html/ejercicio2.html">Consumo Vehículo Eléctrico</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="html/ejercicio3.html">Humedad del Suelo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#formulario-interpolacion">Resuelve tu problema</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Banner con imagen de fondo -->
+    <div class="banner-imagen d-flex align-items-center text-white text-center">
+        <div class="container">
+            <div class="bg-dark bg-opacity-50 p-4 rounded">
+                <h1 class="display-5 fw-bold">Interpolación Numérica en la Vida Real</h1>
+                <p class="lead mb-0">Estima, predice y comprende fenómenos cotidianos con precisión matemática.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <section>
+            <p>
+                La <strong>interpolación numérica</strong> es una técnica matemática que permite estimar valores
+                desconocidos
+                de una función a partir de un conjunto finito de datos conocidos. Se utiliza comúnmente en ingeniería,
+                ciencias aplicadas,
+                economía y medicina cuando no se dispone de una expresión exacta de la función, pero se conocen algunos
+                puntos.
+            </p>
+            <p>
+                En este proyecto se aplican cuatro métodos clásicos de interpolación para estimar valores intermedios
+                de forma precisa y comprensible:
+            </p>
+
+            <h2>1. Interpolación de Newton (Diferencias Divididas)</h2>
+            <p>
+                Este método construye un polinomio interpolante en forma incremental usando
+                <strong>diferencias divididas</strong>. Es especialmente útil cuando los valores de <em>x</em>
+                no están equidistantes.
+            </p>
+            <p>La fórmula general es:</p>
+            <pre><code>
+P(x) = f[x₀] + f[x₀,x₁](x - x₀) + f[x₀,x₁,x₂](x - x₀)(x - x₁) + ...</code></pre>
+
+            <h2>2. Interpolación de Lagrange</h2>
+            <p>
+                Este método usa una combinación lineal de funciones base construidas a partir de los puntos conocidos.
+                No requiere una tabla de diferencias y es fácil de implementar aunque puede ser menos eficiente para
+                muchos datos.
+            </p>
+            <p>El polinomio de Lagrange es:</p>
+            <pre><code>
+L(x) = Σ (yᵢ · lᵢ(x)),  donde  lᵢ(x) = Π (x - xⱼ) / (xᵢ - xⱼ),  j ≠ i</code></pre>
+
+            <h2>3. Interpolación Spline Cúbico</h2>
+            <p>
+                A diferencia de Newton y Lagrange, que usan un único polinomio para todos los puntos,
+                el método de <strong>spline cúbico</strong> construye pequeños polinomios de grado 3 entre cada par de
+                puntos,
+                garantizando suavidad y continuidad hasta la segunda derivada.
+            </p>
+            <p>Este método es muy preciso y estable para grandes conjuntos de datos.</p>
+
+            <h2>4. Regresión Lineal</h2>
+            <p>
+                Aunque no es una interpolación exacta, la <strong>regresión lineal</strong> busca ajustar una recta que
+                minimice el error total con respecto a los datos. Es útil cuando se sospecha una tendencia lineal entre
+                las variables.
+            </p>
+            <p>La forma general de la recta es:</p>
+            <pre><code>
+f(x) = ax + b</code></pre>
+            <p>donde los coeficientes <code>a</code> y <code>b</code> se calculan mediante mínimos cuadrados:</p>
+            <pre><code>
+a = [nΣ(xy) - Σx·Σy] / [nΣ(x²) - (Σx)²]  
+b = [Σy - a·Σx] / n</code></pre>
+
+            <h2>Objetivo del Proyecto</h2>
+            <p>
+                Aplicar estos métodos a problemas reales para estimar valores desconocidos con alta precisión,
+                como la <strong>dosis de un medicamento</strong>, el <strong>consumo energético</strong> de un vehículo
+                o la <strong>humedad del suelo</strong> en agricultura.
+                Además, se permite al usuario ingresar sus propios datos para aplicar automáticamente estos métodos y
+                visualizar los resultados.
+            </p>
+        </section>
+
+        <!-- Ejercicio 1 -->
+
+        <div class="clearfix">
+            <h2 class="text-success">Dosis Pediátrica de Paracetamol</h2>
+            <img src="img/paracetamol.avif" class="img-ejercicio col-md-6 float-md-end mb-3 ms-md-3"" alt="
+                Paracetamol">
+            <p>El paracetamol es uno de los medicamentos más utilizados en niños para tratar la fiebre y el dolor. Sin
+                embargo, su dosificación adecuada es crítica para evitar efectos adversos y lograr eficacia terapéutica.
+                Generalmente, la dosis depende del peso del niño y se administra en mililitros (ml) de suspensión oral.
+            </p>
+            <p>Supongamos que un centro de salud tiene los siguientes datos sobre la dosis de paracetamol para
+                diferentes pesos, usando una suspensión oral de 100 mg/ml:</p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Peso (kg)</th>
+                        <th>8</th>
+                        <th>10</th>
+                        <th>12</th>
+                        <th>13</th>
+                        <th>14</th>
+                        <th>16</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Dosis (ml)</th>
+                        <td>1.6</td>
+                        <td>2.0</td>
+                        <td>2.4</td>
+                        <td><strong>?</strong></td>
+                        <td>2.8</td>
+                        <td>3.2</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Una madre acude con su hijo de 13 kg y solicita orientación sobre la dosis correcta. Como la dosis
+                específica para 13 kg no está registrada, se decide utilizar <strong>interpolación polinomial</strong>
+                para estimarla. Esta estimación es crucial para prescribir de manera precisa y segura.</p>
+            <p class="text-success"><strong>Pregunta:</strong> ¿Cuál es la dosis adecuada de paracetamol en ml para un
+                niño que pesa 13 kg?</p>
+            <div class="text-end mt-4">
+                <a href="html/ejercicio1.html" class="btn btn-outline-success">
+                    Ver solución <i class="bi bi-arrow-right-circle"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Ejercicio 2 -->
+        <div class="clearfix">
+            <h2 class="text-success">Consumo de Energía de Vehículos Eléctricos</h2>
+            <img src="img/vehiculo.jpg" class="img-ejercicio col-md-6 float-md-end mb-3 ms-md-3"" alt=" Vehículo
+                eléctrico">
+            <p>Una empresa desea estimar el consumo energético de un modelo de vehículo eléctrico en función de la
+                velocidad media de conducción. Para ello, realiza pruebas de campo a diferentes velocidades y obtiene
+                los siguientes datos de consumo:</p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Velocidad (km/h)</th>
+                        <th>30</th>
+                        <th>50</th>
+                        <th>70</th>
+                        <th>80</th>
+                        <th>90</th>
+                        <th>110</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Consumo (kWh/100 km)</th>
+                        <td>11.2</td>
+                        <td>13.1</td>
+                        <td>14.8</td>
+                        <td><strong>?</strong></td>
+                        <td>16.4</td>
+                        <td>19.0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>El objetivo es estimar el consumo del vehículo a 80 km/h, ya que es una velocidad común en carreteras
+                urbanas rápidas. Este valor será clave para calcular la autonomía del auto en ese tipo de rutas,
+                contribuyendo así al diseño de rutas de carga más eficientes.</p>
+            <p class="text-success"><strong>Pregunta:</strong> ¿Cuál es el consumo energético (kWh/100 km) estimado a 80
+                km/h?</p>
+            <div class="text-end mt-4">
+                <a href="html/ejercicio2.html" class="btn btn-outline-success">
+                    Ver solución <i class="bi bi-arrow-right-circle"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Ejercicio 3 -->
+        <div class="clearfix">
+            <h2 class="text-success">Humedad del Suelo para Riego Agrícola</h2>
+            <img src="img/sensor2.jpg" class="img-ejercicio col-md-6 float-md-end mb-3 ms-md-3"" alt=" Sensor de humedad
+                del suelo">
+            <p>Un agricultor monitorea la humedad del suelo en diferentes profundidades para optimizar el riego de su
+                cultivo de tomates. Utilizando sensores, obtiene la siguiente información en porcentajes de humedad
+                relativa:</p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Profundidad (cm)</th>
+                        <th>5</th>
+                        <th>10</th>
+                        <th>15</th>
+                        <th>18</th>
+                        <th>20</th>
+                        <th>25</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Humedad (%)</th>
+                        <td>32.5</td>
+                        <td>29.8</td>
+                        <td>27.1</td>
+                        <td><strong>?</strong></td>
+                        <td>25.0</td>
+                        <td>23.2</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>El valor de humedad a 18 cm no está disponible por un error en el sensor. Sin embargo, esta profundidad
+                es crítica porque corresponde a la zona radicular principal del cultivo. Aplicando interpolación cúbica
+                o de Lagrange, es posible estimar ese valor para decidir si se debe regar o no.</p>
+            <p class="text-success"><strong>Pregunta:</strong> ¿Cuál es el porcentaje de humedad estimado a 18 cm de
+                profundidad?</p>
+            <div class="text-end mt-4">
+                <a href="html/ejercicio3.html" class="btn btn-outline-success">
+                    Ver solución <i class="bi bi-arrow-right-circle"></i>
+                </a>
+            </div>
+        </div>
+
+
+        <h2>Interpolación Numérica</h2>
+        <div class="form-container" id="formulario-interpolacion">
+            <div class="form-section">
+                
+                <label>Nombre de variable X: <input type="text" id="xLabel" value="X"></label><br>
+                <label>Nombre de variable Y: <input type="text" id="yLabel" value="Y"></label><br><br>
+
+                <div id="dataPairs">
+                    <div class="data-pair">
+                        <input type="number" placeholder="x" class="x-input">
+                        <input type="number" placeholder="y" class="y-input">
+                    </div>
+                </div>
+                <button onclick="addPair()">Agregar par de datos</button><br><br>
+
+                <label>Valor de <span id="xName">x</span> a interpolar:
+                    <input type="number" id="interpX">
+                </label><br><br>
+
+                <button onclick="interpolar()">Calcular Interpolaciones</button>
+                <button onclick="limpiarFormulario()">Limpiar formulario</button>
+
+                <div class="result-box" id="results"></div>
+            </div>
+
+            <div class="graph-section">
+                <div id="plot"></div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <p>Analisis Numerico</p>
+            <p>Interpolacion</p>
+            <p>&copy; 2025 Ruth Quispe Hinojosa. Todos los derechos reservados.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function addPair() {
+            const pairDiv = document.createElement('div');
+            pairDiv.className = 'data-pair';
+            pairDiv.innerHTML = `
+            <input type="number" placeholder="x" class="x-input">
+            <input type="number" placeholder="y" class="y-input">
+        `;
+            document.getElementById('dataPairs').appendChild(pairDiv);
+        }
+
+        function interpolar() {
+            const xInputs = document.querySelectorAll('.x-input');
+            const yInputs = document.querySelectorAll('.y-input');
+            const x = [], y = [];
+
+            xInputs.forEach((input, i) => {
+                const xv = parseFloat(input.value);
+                const yv = parseFloat(yInputs[i].value);
+                if (!isNaN(xv) && !isNaN(yv)) {
+                    x.push(xv);
+                    y.push(yv);
+                }
+            });
+
+            const xInterp = parseFloat(document.getElementById('interpX').value);
+            if (x.length < 2 || isNaN(xInterp)) {
+                alert("Por favor ingresa al menos dos pares de datos y un valor válido para interpolar.");
+                return;
+            }
+
+            const resNewton = newtonInterpol(x, y, xInterp);
+            const resLagrange = lagrangeInterpol(x, y, xInterp);
+            const resSpline = splineInterpol(x, y, xInterp);
+            const resReg = regresionLineal(x, y, xInterp);
+
+            document.getElementById('results').innerHTML = `
+            <strong>Resultados de Interpolación:</strong><br>
+            Newton: ${resNewton.toFixed(3)}<br>
+            Lagrange: ${resLagrange.toFixed(3)}<br>
+            Spline (aprox.): ${resSpline.toFixed(3)}<br>
+            Regresión Lineal: ${resReg.valor.toFixed(3)} <br>
+            <code>f(x) = ${resReg.a.toFixed(4)}x + ${resReg.b.toFixed(4)}</code>
+        `;
+
+            const xLabel = document.getElementById('xLabel').value || 'x';
+            const yLabel = document.getElementById('yLabel').value || 'y';
+            document.getElementById('xName').innerText = xLabel;
+
+            Plotly.newPlot('plot', [{
+                x: x,
+                y: y,
+                mode: 'markers+lines',
+                name: 'Datos originales'
+            }, {
+                x: [xInterp],
+                y: [resLagrange],
+                mode: 'markers',
+                marker: { color: 'red', size: 10 },
+                name: 'Interpolado'
+            }], {
+                title: `Gráfica de Interpolación`,
+                xaxis: { title: xLabel },
+                yaxis: { title: yLabel }
+            });
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('xLabel').value = 'X';
+            document.getElementById('yLabel').value = 'Y';
+            document.getElementById('interpX').value = '';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('dataPairs').innerHTML = `
+      <div class="data-pair">
+        <input type="number" placeholder="x" class="x-input">
+        <input type="number" placeholder="y" class="y-input">
+      </div>
+    `;
+            document.getElementById('xName').innerText = 'x';
+            Plotly.purge('plot');
+        }
+
+        // Newton
+        function newtonInterpol(x, y, val) {
+            const n = x.length;
+            const coef = y.slice();
+            for (let j = 1; j < n; j++) {
+                for (let i = n - 1; i >= j; i--) {
+                    coef[i] = (coef[i] - coef[i - 1]) / (x[i] - x[i - j]);
+                }
+            }
+            let result = coef[n - 1];
+            for (let i = n - 2; i >= 0; i--) {
+                result = result * (val - x[i]) + coef[i];
+            }
+            return result;
+        }
+
+        // Lagrange
+        function lagrangeInterpol(x, y, val) {
+            const n = x.length;
+            let result = 0;
+            for (let i = 0; i < n; i++) {
+                let term = y[i];
+                for (let j = 0; j < n; j++) {
+                    if (j !== i) {
+                        term *= (val - x[j]) / (x[i] - x[j]);
+                    }
+                }
+                result += term;
+            }
+            return result;
+        }
+
+        // Spline cúbico (simple para estimar, no polinomios reales)
+        function splineInterpol(x, y, val) {
+            for (let i = 0; i < x.length - 1; i++) {
+                if (x[i] <= val && val <= x[i + 1]) {
+                    const t = (val - x[i]) / (x[i + 1] - x[i]);
+                    return (1 - t) * y[i] + t * y[i + 1]; // lineal como aproximación
+                }
+            }
+            return NaN;
+        }
+
+        // Regresión lineal
+        function regresionLineal(x, y, val) {
+            const n = x.length;
+            const sx = x.reduce((a, b) => a + b, 0);
+            const sy = y.reduce((a, b) => a + b, 0);
+            const sxy = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sx2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+
+            const a = (n * sxy - sx * sy) / (n * sx2 - sx * sx);
+            const b = (sy - a * sx) / n;
+            const valor = a * val + b;
+
+            return { valor, a, b };
+        }
+    </script>
+
+</body>
+
+</html>
